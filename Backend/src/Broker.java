@@ -29,7 +29,7 @@ public class Broker {
     public Broker() {
         registeredUsers = new HashMap<String, ArrayList<String>>();
         UsersInfo = new HashMap<String, ArrayList<String>>();
-        MainServerIP = "127.0.0.1";
+
         MainServerPort = 5000;
 
     }
@@ -53,7 +53,7 @@ public class Broker {
 
     public void updateMainServer() {
         try {
-            Socket connectToMS = new Socket(MainServerIP, MainServerPort);
+            Socket connectToMS = new Socket(UserNode.MainServerIP, MainServerPort);
             ObjectOutputStream out = new ObjectOutputStream(connectToMS.getOutputStream());
             ObjectInputStream in = new ObjectInputStream(connectToMS.getInputStream());
 

@@ -29,7 +29,7 @@ public class SendMessage extends Thread {
 
 
 
-                    List<String> rensposibleBroker = UserNode.hashTopic(UserNode.name);
+                    List<String> rensposibleBroker = UserNode.hashName(UserNode.name);
 
                     out.writeUTF("Send");
 

@@ -16,7 +16,7 @@ public class UserNode extends Thread{
     public static HashMap<BigInteger, ArrayList<String>> brokersInfo = new HashMap<BigInteger, ArrayList<String>>();
 
     Socket connectToServer;
-    String MainServerIP = "127.0.0.1";
+    public static final String MainServerIP = "192.168.1.8";
     int MainServerPort = 5000;
     UUID uuid;
     public static String name;
@@ -68,7 +68,7 @@ public class UserNode extends Thread{
                 String brokerIP = in.readUTF();
                 String brokerPort = in.readUTF();
 
-                BigInteger hash = Info.Util.hash(brokerIP + brokerPort);
+                BigInteger hash = Info.Util.hash(brokerIP + brokerPort); // hash brokers
 
                 brokerHashes.add(hash);
 
@@ -119,21 +119,13 @@ public class UserNode extends Thread{
             sendmsg.start();
 
 
-
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-
     }
 
-    private void menu() throws IOException, ClassNotFoundException {
-
-
-    }
-
-
-    public static List<String> hashTopic(String topic) {
+    public static List<String> hashName(String topic) {
         BigInteger no = Info.Util.hash(topic);
 
         if (no.compareTo(brokerHashes.get(0)) > 0 && no.compareTo(brokerHashes.get(1)) < 0) {
