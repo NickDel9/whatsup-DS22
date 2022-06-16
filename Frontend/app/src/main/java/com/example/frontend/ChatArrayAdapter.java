@@ -1,5 +1,6 @@
 package com.example.frontend;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +13,11 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class ChatArrayAdapter extends ArrayAdapter<Message> {
+class ChatArrayAdapter extends ArrayAdapter<Message>  {
 
     private TextView chatText;
     private List<Message> chatMessageList = new ArrayList<Message>();
@@ -26,6 +28,9 @@ class ChatArrayAdapter extends ArrayAdapter<Message> {
         chatMessageList.add(object);
         super.add(object);
     }
+
+
+
 
     public ChatArrayAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -44,33 +49,50 @@ class ChatArrayAdapter extends ArrayAdapter<Message> {
         Message chatMessageObj = getItem(position);
         View row = convertView;
         LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         if (chatMessageObj.left) {
-            row = inflater.inflate(R.layout.left, parent, false);
+            if (chatMessageObj.type.equals("mp4"))
+                row = inflater.inflate(R.layout.left_img, parent, false);
+
+            else if (chatMessageObj.type.equals("png") || chatMessageObj.type.equals("jpg"))
+                row = inflater.inflate(R.layout.left_img, parent, false);
+
+            else
+                row = inflater.inflate(R.layout.left, parent, false);
         }else{
-            row = inflater.inflate(R.layout.right, parent, false);
+            if (chatMessageObj.type.equals("mp4"))
+                row = inflater.inflate(R.layout.right_img, parent, false);
+
+            else if (chatMessageObj.type.equals("png") || chatMessageObj.type.equals("jpg"))
+                row = inflater.inflate(R.layout.right_img, parent, false);
+
+            else
+                row = inflater.inflate(R.layout.right, parent, false);
+
         }
+
         if (chatMessageObj.type.equals("string")){
             chatText = (TextView) row.findViewById(R.id.msgr);
             chatText.setText(chatMessageObj.message);
             chatText.getLayoutParams().height = 110;
+
         }
         else if (chatMessageObj.type.equals("mp4")){
-            VideoView videoView = (VideoView) row.findViewById(R.id.msgr_video);
 
-            MediaController mediaController = new MediaController(this.context);
+            ImageView imageView = (ImageView) row.findViewById(R.id.msgr_img);
+            imageView.getLayoutParams().height = 250;
+            imageView.setImageResource(R.drawable.ic_baseline_ondemand_video_24);
 
-            videoView.setVideoURI(Uri.parse(chatMessageObj.message));
-            videoView.setMediaController(mediaController);
-            videoView.getLayoutParams().height = 200;
-
-            videoView.start();
         }
         else if (chatMessageObj.type.equals("png") || chatMessageObj.type.equals("jpg")){
+
             ImageView imageView = (ImageView) row.findViewById(R.id.msgr_img);
             imageView.getLayoutParams().height = 250;
             imageView.setImageURI(Uri.parse(chatMessageObj.message));
 
+
         }
+
 
 
         return row;

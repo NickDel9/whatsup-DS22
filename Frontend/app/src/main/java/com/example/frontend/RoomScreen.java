@@ -1,17 +1,35 @@
 package com.example.frontend;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
+import android.graphics.Camera;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.Layout;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.frontend.File.MultimediaFile;
 import com.example.frontend.databinding.RoomBinding;
@@ -29,15 +47,20 @@ import java.util.Objects;
 
 public class RoomScreen extends AppCompatActivity {
 
+    private Camera mCamera;
+
     public static RoomBinding binding;
     private String username;
     private String room;
     private ArrayAdapter<String> adapter;
 
+    public static Context context;
+
     public static ChatArrayAdapter chatArrayAdapter;
     public static boolean side = false;
     private ArrayList<String> arrayList;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +76,6 @@ public class RoomScreen extends AppCompatActivity {
         chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(),  R.layout.right);
         binding.messagesView.setAdapter(chatArrayAdapter);
 
-        binding.messagesView.setAdapter(adapter);
-
         username = getIntent().getExtras().get("username").toString();
         room = getIntent().getExtras().get("room").toString();
 
@@ -68,6 +89,16 @@ public class RoomScreen extends AppCompatActivity {
             }
         });
 
+        binding.plusButton.setOnClickListener(view -> {
+            if (binding.more.getVisibility() == View.INVISIBLE)
+                binding.more.setVisibility(View.VISIBLE);
+            else
+                binding.more.setVisibility(View.INVISIBLE);
+        });
+
+
+
+
         binding.messagesView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         binding.messagesView.setAdapter(chatArrayAdapter);
 
@@ -79,6 +110,62 @@ public class RoomScreen extends AppCompatActivity {
             }
         });
 
+
+        binding.messagesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.e("asaa  ",chatArrayAdapter.getItem(i).message);
+                Log.e("file ?  ",chatArrayAdapter.getItem(i).type);
+
+                if (chatArrayAdapter.getItem(i).type.equals("mp4")){
+                    Intent intent = new Intent(RoomScreen.this , FileView.class);
+                    intent.putExtra("URI" , chatArrayAdapter.getItem(i).message);
+                    intent.putExtra("Type" , "video");
+                    RoomScreen.this.startActivity(intent);
+                }
+                else if (chatArrayAdapter.getItem(i).type.equals("png") || chatArrayAdapter.getItem(i).type.equals("jpg")){
+                    Intent intent = new Intent(RoomScreen.this , FileView.class);
+                    intent.putExtra("URI" , chatArrayAdapter.getItem(i).message);
+                    intent.putExtra("Type" , "picture");
+                    RoomScreen.this.startActivity(intent);
+                }
+            }
+        });
+
+        binding.messageInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                return false;
+            }
+        });
+
+        binding.cameraButton.setOnClickListener(view -> {
+
+            getCameraPermission();
+
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+            startActivityForResult(intent, 1);
+        });
+
+        binding.fileButton.setOnClickListener(view -> {
+
+        });
+
+
+
+    }
+
+    private void getCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    100);
+        }
     }
 
     public boolean displayOwnMessage() throws IOException {
@@ -156,6 +243,10 @@ public class RoomScreen extends AppCompatActivity {
     }
 
 
+
+
+
+
     private class Chat extends AsyncTask<String,String,String>{
 
 
@@ -165,6 +256,24 @@ public class RoomScreen extends AppCompatActivity {
             List<String> rensposibleBroker = MainActivity.hashName(MainActivity.name);
 
             try {
+
+                // connect to broker
+                Socket socket = new Socket(rensposibleBroker.get(0), Integer.parseInt(rensposibleBroker.get(1)));
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+                objectOutputStream.writeUTF("Sender");
+                objectOutputStream.flush();
+
+
+                objectOutputStream.writeUTF(binding.messageInput.getText().toString());
+                objectOutputStream.flush();
+
+                socket.close();
+                objectInputStream.close();
+                objectOutputStream.close();
+
+
                 MainActivity.out.writeUTF("Send");
                 MainActivity.out.flush();
 
@@ -183,20 +292,7 @@ public class RoomScreen extends AppCompatActivity {
                 MainActivity.out.writeUTF("Text");
                 MainActivity.out.flush();
 
-                // connect to broker
-                Socket socket = new Socket(rensposibleBroker.get(0), Integer.parseInt(rensposibleBroker.get(1)));
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
 
-                objectOutputStream.writeUTF("Sender");
-                objectOutputStream.flush();
-
-                objectOutputStream.writeUTF(binding.messageInput.getText().toString());
-                objectOutputStream.flush();
-
-                socket.close();
-                objectInputStream.close();
-                objectOutputStream.close();
 
 
             } catch (IOException e) {

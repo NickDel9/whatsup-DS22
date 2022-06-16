@@ -4,7 +4,15 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/activity_main.xml" value="0.18958333333333333" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/camera.xml" value="0.20478837109876016" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left.xml" value="0.19270833333333334" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left_img.xml" value="0.18" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left_video.xml" value="0.23471569046601112" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right.xml" value="0.2" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right_img.xml" value="0.23471569046601112" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right_video.xml" value="0.23471569046601112" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/room.xml" value="0.19" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/video_view.xml" value="0.1911073108165883" />
       </map>
     </option>
   </component>

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_height="match_parent"
+    >
 
     <TextView
         android:id="@+id/msgr"
@@ -12,6 +15,9 @@
         android:layout_marginBottom="5dp"
         android:layout_marginRight="20dp"
         android:background="@color/teal_700"
+
+
+
         android:paddingBottom="8dp"
         android:paddingLeft="10dp"
         android:textSize="20sp"
@@ -20,37 +26,4 @@
         android:text="Sampleleft"
         android:textColor="#000" />
 
-    <VideoView
-        android:id="@+id/msgr_video"
-        android:layout_width="250dp"
-        android:layout_height="0dp"
-        android:maxWidth="250dp"
-        android:layout_gravity="right"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="20dp"
-
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:textSize="20sp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp">
-
-    </VideoView>
-
-    <ImageView
-        android:id="@+id/msgr_img"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:maxWidth="250dp"
-        android:layout_gravity="right"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="20dp"
-
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:textSize="20sp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp">
-
-    </ImageView>
 </RelativeLayout>
