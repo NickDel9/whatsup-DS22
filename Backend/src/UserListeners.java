@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
+
 public class UserListeners extends Thread{
 
     ObjectInputStream in;
@@ -78,13 +79,13 @@ public class UserListeners extends Thread{
                     objectOutputStream.flush();
 
                     //pull
-                    ArrayList<MultimediaFile> file = new ArrayList<>();
+                    ArrayList<byte[]> file = new ArrayList<>();
                     int len = objectInputStream.readInt();
 
                     String extension = objectInputStream.readUTF();
 
                     for (int i = 0; i < len; i++){
-                        MultimediaFile chunk = (MultimediaFile) objectInputStream.readObject();
+                        byte[] chunk = (byte[]) objectInputStream.readObject();
                         file.add(chunk);
                     }
                     Desktop.getDesktop().open(UserNode.ReInitFile(file , "src/out/element"+file.size() +"."+ extension));

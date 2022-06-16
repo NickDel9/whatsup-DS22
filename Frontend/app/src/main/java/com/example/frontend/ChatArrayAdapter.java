@@ -52,21 +52,24 @@ class ChatArrayAdapter extends ArrayAdapter<Message> {
         if (chatMessageObj.type.equals("string")){
             chatText = (TextView) row.findViewById(R.id.msgr);
             chatText.setText(chatMessageObj.message);
+            chatText.getLayoutParams().height = 110;
         }
         else if (chatMessageObj.type.equals("mp4")){
             VideoView videoView = (VideoView) row.findViewById(R.id.msgr_video);
 
-            MediaController mediaController = new MediaController(RoomScreen.chatArrayAdapter.getContext());
+            MediaController mediaController = new MediaController(this.context);
 
             videoView.setVideoURI(Uri.parse(chatMessageObj.message));
             videoView.setMediaController(mediaController);
-            videoView.getLayoutParams().height = 150;
+            videoView.getLayoutParams().height = 200;
+
             videoView.start();
         }
         else if (chatMessageObj.type.equals("png") || chatMessageObj.type.equals("jpg")){
             ImageView imageView = (ImageView) row.findViewById(R.id.msgr_img);
-            imageView.getLayoutParams().height = 150;
+            imageView.getLayoutParams().height = 250;
             imageView.setImageURI(Uri.parse(chatMessageObj.message));
+
         }
 
 

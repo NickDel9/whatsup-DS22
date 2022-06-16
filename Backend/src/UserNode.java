@@ -1,9 +1,8 @@
-import jdk.jshell.execution.Util;
-
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.util.*;
+
 
 public class UserNode extends Thread{
 
@@ -148,21 +147,20 @@ public class UserNode extends Thread{
         return ip;
     }
 
-    public static File ReInitFile(ArrayList<MultimediaFile> videoFile , String newPath) throws IOException
+    public static File ReInitFile(ArrayList<byte[]> videoFile , String newPath) throws IOException
     {
         File file = new File(newPath);
         int size = 0;
-        for (MultimediaFile element : videoFile) {
-            size += element.getMultimediaFileChunk().length;
+        for (byte[] element : videoFile) {
+            size += element.length;
         }
         byte[] arr = new byte[size];
 
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         int a = 0;
-        for (MultimediaFile item : videoFile) {
+        for (byte[]  item : videoFile) {
             try{
-                byte[] temp = item.getMultimediaFileChunk();
-                for (byte b : temp) {
+                for (byte b : item) {
                     arr[a] = b;
                     a++;
                 }

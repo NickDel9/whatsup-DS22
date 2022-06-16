@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Frontend">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../Frontend" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../Frontend/app/build/generated/data_binding_base_class_source_out/debug/out" />
+      <root url="file://$PROJECT_DIR$/../Frontend/app/build/generated/source/buildConfig/debug" />
+      <root url="file://$PROJECT_DIR$/../Frontend/app/src/androidTest/java" />
+      <root url="file://$PROJECT_DIR$/../Frontend/app/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../Frontend/app/src/test/java" />
+    </SOURCES>
+  </library>
+</component>

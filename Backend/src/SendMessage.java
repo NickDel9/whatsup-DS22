@@ -1,3 +1,7 @@
+
+
+
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,6 +11,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+
 
 public class SendMessage extends Thread {
 
@@ -51,7 +57,7 @@ public class SendMessage extends Thread {
 
                         String path = sc.next();
 
-                        ArrayList<MultimediaFile> chunks = new ArrayList<>(Chunks(path));
+                        ArrayList<byte[]> chunks = new ArrayList<>(Chunks(path));
 
                         out.writeUTF("File");
                         out.flush();
@@ -76,7 +82,7 @@ public class SendMessage extends Thread {
                         System.out.println(extension);
 
                         //push
-                        for (MultimediaFile chunk : chunks){
+                        for (byte[] chunk : chunks){
                             objectOutputStream.writeObject(chunk);
                             objectOutputStream.flush();
                         }
@@ -114,13 +120,13 @@ public class SendMessage extends Thread {
 
     }
 
-    private ArrayList<MultimediaFile> Chunks(String path) throws IOException {
+    private ArrayList<byte[]> Chunks(String path) throws IOException {
 
         int numOfChunks;
         byte[] multimediaFileChunk = null;
 
         byte[] arrayBytes = Files.readAllBytes(Paths.get(path));
-        ArrayList<MultimediaFile> multimediaFiles = new ArrayList<MultimediaFile>();
+        ArrayList<byte[]> multimediaFiles = new ArrayList<byte[]>();
 
         int totalBytes = arrayBytes.length;
 
@@ -146,10 +152,10 @@ public class SendMessage extends Thread {
                 }
             }
 
-            MultimediaFile videoFile = new MultimediaFile(multimediaFileChunk);
-            videoFile.setMultimediaFileChunk(multimediaFileChunk);
+            byte[] multimediaFile = multimediaFileChunk;
 
-            multimediaFiles.add(videoFile);
+
+            multimediaFiles.add(multimediaFile);
         }
         return multimediaFiles;
 

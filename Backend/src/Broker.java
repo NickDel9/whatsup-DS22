@@ -1,3 +1,5 @@
+
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,7 +26,7 @@ public class Broker {
 
     String text = "";
     String extension = "";
-    ArrayList<MultimediaFile> file = new ArrayList<>();
+    ArrayList<byte[]> file = new ArrayList<>();
 
     public Broker() {
         registeredUsers = new HashMap<String, ArrayList<String>>();
@@ -98,7 +100,7 @@ public class Broker {
                 extension = objectInputStream.readUTF();
 
                 for (int i = 0; i < len; i++){
-                    MultimediaFile chunk = (MultimediaFile) objectInputStream.readObject();
+                    byte[] chunk = (byte[] ) objectInputStream.readObject();
                     file.add(chunk);
                 }
 
@@ -120,7 +122,7 @@ public class Broker {
                 objectOutputStream.flush();
 
 
-                for (MultimediaFile multimediaFile : file) {
+                for (byte[] multimediaFile : file) {
                     objectOutputStream.writeObject(multimediaFile);
                     objectOutputStream.flush();
                 }

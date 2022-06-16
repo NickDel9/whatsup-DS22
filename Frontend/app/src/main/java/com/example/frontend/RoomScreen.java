@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.frontend.File.MultimediaFile;
 import com.example.frontend.databinding.RoomBinding;
 
 import java.io.File;
@@ -37,11 +38,6 @@ public class RoomScreen extends AppCompatActivity {
     public static boolean side = false;
     private ArrayList<String> arrayList;
 
-
-
-
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +49,6 @@ public class RoomScreen extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-
-
 
         chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(),  R.layout.right);
         binding.messagesView.setAdapter(chatArrayAdapter);
@@ -85,9 +79,6 @@ public class RoomScreen extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
     public boolean displayOwnMessage() throws IOException {
@@ -108,35 +99,28 @@ public class RoomScreen extends AppCompatActivity {
             initFile(data , extension);
         }
 
-
-
-
-
         return true;
     }
 
-    protected static void initFile(String multimediaFile, String extension)
+    protected static void initFile(String path, String extension)
     {
         File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File dir = new File(root.getAbsolutePath() + "/app_data");
 
+        String URL = path;
+        Log.e("DEBUG", extension +" "+URL);
 
-        String URL = dir + "/" + multimediaFile +"."+ extension;
-        Log.e("DEBUG", "VIDEO "+URL);
-
-        chatArrayAdapter.add(new Message(side, URL , extension));
-        binding.messageInput.setText("");
+        chatArrayAdapter.add(new Message(!side, URL , extension));
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private ArrayList<MultimediaFile> Chunks(String path) throws IOException {
+    private ArrayList<byte[]> Chunks(String path) throws IOException {
 
         int numOfChunks;
         byte[] multimediaFileChunk = null;
 
         byte[] arrayBytes = Files.readAllBytes(Paths.get(path));
-        ArrayList<MultimediaFile> multimediaFiles = new ArrayList<MultimediaFile>();
+        ArrayList<byte[]> multimediaFiles = new ArrayList<byte[]>();
 
         int totalBytes = arrayBytes.length;
 
@@ -162,10 +146,10 @@ public class RoomScreen extends AppCompatActivity {
                 }
             }
 
-            MultimediaFile videoFile = new MultimediaFile(multimediaFileChunk);
-            videoFile.setMultimediaFileChunk(multimediaFileChunk);
+            byte[] multimediaFile = multimediaFileChunk;
 
-            multimediaFiles.add(videoFile);
+
+            multimediaFiles.add(multimediaFile);
         }
         return multimediaFiles;
 

@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.example.frontend.File.MultimediaFile;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class UserListeners extends Thread{
 
@@ -96,28 +99,27 @@ public class UserListeners extends Thread{
                     objectOutputStream.flush();
 
                     //pull
-                    ArrayList<MultimediaFile> file = new ArrayList<>();
+                    ArrayList<byte[]> file = new ArrayList<>();
                     int len = objectInputStream.readInt();
 
                     String extension = objectInputStream.readUTF();
 
                     for (int i = 0; i < len; i++){
-                        MultimediaFile chunk = (MultimediaFile) objectInputStream.readObject();
+                        byte[] chunk = (byte[]) objectInputStream.readObject();
                         file.add(chunk);
                     }
                     System.out.println(file.size());
 
                     int size = 0;
-                    for (MultimediaFile element : file) {
-                        size += element.getMultimediaFileChunk().length;
+                    for (byte[] element : file) {
+                        size += element.length;
                     }
                     byte[] arr = new byte[size];
 
                     int a = 0;
-                    for (MultimediaFile item : file) {
+                    for (byte[] item : file) {
                         try{
-                            byte[] temp = item.getMultimediaFileChunk();
-                            for (byte b : temp) {
+                            for (byte b : item) {
                                 arr[a] = b;
                                 a++;
                             }
@@ -127,7 +129,7 @@ public class UserListeners extends Thread{
                         }
                     }
 
-                    String path = writeFileData("element"+file.size() , arr);
+                    String path = writeFileData("element"+size, arr, extension);
                     //Desktop.getDesktop().open(UserNode.ReInitFile(file , "src/out/element"+file.size() +"."+ extension));
 
                     socket.close();
@@ -151,16 +153,16 @@ public class UserListeners extends Thread{
 
     }
 
-    private String writeFileData(String name , byte[] data) {
+    private String writeFileData(String name , byte[] data ,String extension) {
         File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         File dir = new File(root.getAbsolutePath() + "/app_data");
 
-        String path = dir.getAbsolutePath() + "/"+ name + ".mp4";
+        String path = dir.getAbsolutePath() + "/"+ name + "."+extension;
 
         if (!new File(path).exists()) {
 
             Log.e("NAME", name);
-            File file = new File(dir.toString(), name + ".mp4");
+            File file = new File(dir.toString(), name + "."+extension);
 
             FileOutputStream fileOutputStream = null;
 
