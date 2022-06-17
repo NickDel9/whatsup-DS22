@@ -13,6 +13,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ class ChatArrayAdapter extends ArrayAdapter<Message>  {
 
             ImageView imageView = (ImageView) row.findViewById(R.id.msgr_img);
             imageView.getLayoutParams().height = 250;
-            imageView.setImageURI(Uri.parse(chatMessageObj.message));
+            imageView.setImageURI(Uri.fromFile(new File(chatMessageObj.message)));
 
 
         }

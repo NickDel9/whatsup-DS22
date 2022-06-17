@@ -99,6 +99,8 @@ public class Broker {
 
                 extension = objectInputStream.readUTF();
 
+                file = new ArrayList<>();
+
                 for (int i = 0; i < len; i++){
                     byte[] chunk = (byte[] ) objectInputStream.readObject();
                     file.add(chunk);
@@ -127,6 +129,7 @@ public class Broker {
                     objectOutputStream.writeObject(multimediaFile);
                     objectOutputStream.flush();
                 }
+
             }
 
 

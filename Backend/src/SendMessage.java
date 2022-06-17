@@ -59,9 +59,6 @@ public class SendMessage extends Thread {
 
                         ArrayList<byte[]> chunks = new ArrayList<>(Chunks(path));
 
-                        out.writeUTF("File");
-                        out.flush();
-
                         // connect to broker
                         Socket socket = new Socket(rensposibleBroker.get(0), Integer.parseInt(rensposibleBroker.get(1)));
                         ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -79,7 +76,7 @@ public class SendMessage extends Thread {
                         objectOutputStream.writeUTF(extension);
                         objectOutputStream.flush();
 
-                        System.out.println(extension);
+                     //   System.out.println(extension);
 
                         //push
                         for (byte[] chunk : chunks){
@@ -90,6 +87,12 @@ public class SendMessage extends Thread {
                         socket.close();
                         objectInputStream.close();
                         objectOutputStream.close();
+
+
+                        out.writeUTF("File");
+                        out.flush();
+
+
                     }
                     else{
                         out.writeUTF("Text");

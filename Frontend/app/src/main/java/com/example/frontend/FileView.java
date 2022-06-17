@@ -37,7 +37,7 @@ public class FileView extends AppCompatActivity {
         String URI = getIntent().getExtras().get("URI").toString();
 
         if (Type.equals("video")){
-            MediaController mediaController = new MediaController(getApplicationContext());
+            MediaController mediaController = new MediaController(this);
 
             binding.video.setMediaController(mediaController);
 
