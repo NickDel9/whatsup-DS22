@@ -3,15 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/drawable/border.xml" value="0.1185" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/drawable/border_box_2.xml" value="0.1185" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/drawable/ic_baseline_people_alt_24.xml" value="0.119" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/drawable/users.xml" value="0.119" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/activity_main.xml" value="0.18958333333333333" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/camera.xml" value="0.20478837109876016" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left_img.xml" value="0.18" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left_user.xml" value="0.5" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/left_video.xml" value="0.23471569046601112" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right.xml" value="0.2" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right_img.xml" value="0.23471569046601112" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right_user.xml" value="0.20222317229585293" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/right_video.xml" value="0.23471569046601112" />
-        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/room.xml" value="0.19" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/room.xml" value="0.2" />
+        <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/users.xml" value="0.21675929884566053" />
         <entry key="..\:/Users/User/Desktop/DS22/whatsup-DS22/Frontend/app/src/main/res/layout/video_view.xml" value="0.1911073108165883" />
       </map>
     </option>

@@ -10,13 +10,13 @@ public class Server extends Thread{
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
 
-    // key = username | value = password
     private static HashMap<String, String> appnodeInfo = new HashMap<>();
     private static ArrayList<ArrayList<String>> brokers = new ArrayList<>();
     private static HashMap<String, ArrayList<String>> appnodes = new HashMap<>();
     private static HashMap<String, ArrayList<String>> rooms = new HashMap<>();
     private static HashMap<Socket , HashMap<ObjectOutputStream,ObjectInputStream>> clients = new HashMap<>();;
     private static HashMap<Socket,String> RoomPerSocket = new HashMap<>();
+    private static HashMap<String,ArrayList<String>> RoomPerUser = new HashMap<>();
     Socket connectionSocket;
 
     public Server(Socket connectionSocket) {
@@ -31,9 +31,6 @@ public class Server extends Thread{
     }
 
     public static void main(String[] args) throws IOException {
-
-        // get registered users
-        init();
 
         ServerSocket serverSocket = null;
         Socket connectionSocket = null;
@@ -50,21 +47,6 @@ public class Server extends Thread{
 
     }
 
-    private static void init() {
-        try (BufferedReader br = new BufferedReader(new FileReader("src/credentials.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(" ");
-
-                String userName = values[0];
-                String password = values[1];
-
-                //appnodeInfo.put(userName, password);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void run(){
 
@@ -72,7 +54,6 @@ public class Server extends Thread{
         try {
 
             while (true){
-
 
                 task = objectInputStream.readUTF();
                 System.out.println(task);
@@ -98,6 +79,7 @@ public class Server extends Thread{
                 }
                 else if (task.equals("UserNode")){
 
+                    // get streams of current socket and save them to hashmap
                      HashMap temp = new HashMap<>();
                      temp.put(objectOutputStream ,objectInputStream );
                      clients.put(connectionSocket , temp);
@@ -137,27 +119,37 @@ public class Server extends Thread{
 
                     RoomPerSocket.put(connectionSocket , room);
 
+                    if (!RoomPerUser.containsKey(room)){
+                        ArrayList<String> users = new ArrayList<>();
+                        users.add(name);
+                        RoomPerUser.put(room , users);
+                    }
+                    else{
+                        RoomPerUser.get(room).add(name);
+                    }
+
+
                     if (rooms.containsKey(room)){
                         objectOutputStream.writeUTF("Join Room");
                         objectOutputStream.flush();
                         rooms.get(room).add(name);
-
-                        ArrayList<String> names = new ArrayList<>();
-                        names.addAll(appnodeInfo.keySet());
 
                         System.out.println("User joined");
 
                         System.out.println(clients.size());
 
                         for (Socket s : clients.keySet()){
+                            if (RoomPerSocket.get(s).equals(room)){
+                                ObjectOutputStream out = (ObjectOutputStream) clients.get(s).keySet().toArray()[0];
 
-                            ObjectOutputStream out = (ObjectOutputStream) clients.get(s).keySet().toArray()[0];
+                                out.writeUTF("User joined");
+                                out.flush();
 
-                            out.writeUTF("User joined");
-                            out.flush();
+                                out.writeUTF(name); //send to client the usernames
+                                out.flush();
+                            }
 
-                            out.writeObject(names); //send to client the usernames
-                            out.flush();
+
 
                         }
 
@@ -215,6 +207,23 @@ public class Server extends Thread{
                      }
 
                 }
+                else if(task.equals("Online Users")){
+
+                    String room = objectInputStream.readUTF();
+
+                     objectOutputStream.writeUTF("Get UserList");
+                     objectOutputStream.flush();
+
+                     objectOutputStream.writeInt(RoomPerUser.get(room).size());
+                     objectOutputStream.flush();
+
+                     for (String s : RoomPerUser.get(room)){
+                         objectOutputStream.writeUTF(s);
+                         objectOutputStream.flush();
+                     }
+
+
+                 }
 
             }
 

@@ -58,6 +58,8 @@ class ChatArrayAdapter extends ArrayAdapter<Message>  {
             else if (chatMessageObj.type.equals("png") || chatMessageObj.type.equals("jpg"))
                 row = inflater.inflate(R.layout.left_img, parent, false);
 
+            else if (chatMessageObj.type.equals("name"))
+                row = inflater.inflate(R.layout.left_user, parent, false);
             else
                 row = inflater.inflate(R.layout.left, parent, false);
         }else{
@@ -72,11 +74,16 @@ class ChatArrayAdapter extends ArrayAdapter<Message>  {
 
         }
 
-        if (chatMessageObj.type.equals("string")){
+        if (chatMessageObj.type.equals("name")){
+            chatText = (TextView) row.findViewById(R.id.msgr);
+            chatText.setText(chatMessageObj.message);
+            row.setEnabled(false);
+        }
+        else if (chatMessageObj.type.equals("string")){
             chatText = (TextView) row.findViewById(R.id.msgr);
             chatText.setText(chatMessageObj.message);
             chatText.getLayoutParams().height = 110;
-
+            row.setEnabled(false);
         }
         else if (chatMessageObj.type.equals("mp4")){
 

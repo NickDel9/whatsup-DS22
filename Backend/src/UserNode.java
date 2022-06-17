@@ -47,7 +47,7 @@ public class UserNode extends Thread{
 
         Scanner sc = new Scanner(System. in);
         System.out.println("Hello! Type your Username!");
-        this.name = sc.next();
+        this.name = sc.nextLine();
 
         if (!name.equals("")){
             out.writeUTF("UserNode");

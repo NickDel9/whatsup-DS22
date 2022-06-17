@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.example.frontend.File.MultimediaFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -45,12 +45,14 @@ public class UserListeners extends Thread{
                     System.out.println("join room "+ MainActivity.name);
                 }
                 else if (task.equals("User joined")){
-                    ArrayList<String> friends = (ArrayList<String>) in.readObject();
-
-                    for(int i = 0; i < friends.size(); i++){
-                        if (!friends.get(i).equals(MainActivity.name))
-                            System.out.println(i+". "+friends.get(i));
-                    }
+                    String name = in.readUTF();
+                    System.out.println(name +" join room!");
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            RoomScreen.displayRemoteMessage(name + " join room!", "name");
+                        }
+                    });
                 }
                 else if (task.equals("Receive")){
                     String BrokerIp = in.readUTF();
@@ -73,7 +75,8 @@ public class UserListeners extends Thread{
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            RoomScreen.displayRemoteMessage(senderName + " : " +text , "text");
+                            RoomScreen.displayRemoteMessage(senderName, "name");
+                            RoomScreen.displayRemoteMessage(text , "text");
                         }
                     });
 
@@ -104,24 +107,26 @@ public class UserListeners extends Thread{
 
                     String extension = objectInputStream.readUTF();
 
+                    // receive file from Broker on byte[](array) by chunk methodology
                     for (int i = 0; i < len; i++){
                         byte[] chunk = (byte[]) objectInputStream.readObject();
                         file.add(chunk);
                     }
-                    System.out.println(file.size());
 
+                    // make all of the received chunks , one
                     int size = 0;
                     for (byte[] element : file) {
                         size += element.length;
                     }
-                    byte[] arr = new byte[size];
 
-                    int a = 0;
-                    for (byte[] item : file) {
+                    byte[] arr = new byte[size];
+                    int i = 0;
+
+                    for (byte[] ByteArray : file) {
                         try{
-                            for (byte b : item) {
-                                arr[a] = b;
-                                a++;
+                            for (byte bt : ByteArray) {
+                                arr[i] = bt;
+                                i++;
                             }
 
                         } catch (Exception e) {
@@ -129,8 +134,8 @@ public class UserListeners extends Thread{
                         }
                     }
 
+                    // make & store file from the final byte array (arr)
                     String path = writeFileData("element"+size, arr, extension);
-                    //Desktop.getDesktop().open(UserNode.ReInitFile(file , "src/out/element"+file.size() +"."+ extension));
 
                     socket.close();
                     objectInputStream.close();
@@ -139,16 +144,36 @@ public class UserListeners extends Thread{
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
+
                         public void run() {
+                            RoomScreen.displayRemoteMessage(senderName, "name");
                             RoomScreen.displayRemoteMessage(path, "file");
                         }
                     });
                 }
+                else if (task.equals("Get UserList")){
+                    int size = in.readInt();
 
-            }
+                    ArrayList<String> online_users = new ArrayList<>();
+                    for (int i = 0; i < size; i++){
+                        String user = in.readUTF();
+                        online_users.add(user);
+                    }
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+
+                        public void run() {
+                            RoomScreen.initUserList(online_users);
+                        }
+                    });
+                }
 
 
-        } catch (IOException | ClassNotFoundException e) {
+        }
+
+
+    } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 public class Broker {
 
@@ -16,24 +16,14 @@ public class Broker {
     protected static String brokerIP;
     protected static int brokerPort;
 
-    public static String  MainServerIP;
     public static int MainServerPort;
-
-    // contains hashtag key. Also for every key we have a list that contains the channelName that published the hashtag.
-    public static HashMap<String, ArrayList<String>> registeredUsers;
-    // contains channelName key. for every key we have a list that contains channelName's ip at .get(0) position and port at  .get(1) position.
-    public static HashMap<String, ArrayList<String>> UsersInfo;
 
     String text = "";
     String extension = "";
     ArrayList<byte[]> file = new ArrayList<>();
 
     public Broker() {
-        registeredUsers = new HashMap<String, ArrayList<String>>();
-        UsersInfo = new HashMap<String, ArrayList<String>>();
-
         MainServerPort = 5000;
-
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {

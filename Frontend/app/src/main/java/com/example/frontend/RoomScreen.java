@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Camera;
@@ -14,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Layout;
 import android.util.Log;
@@ -33,7 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.frontend.File.MultimediaFile;
 import com.example.frontend.databinding.RoomBinding;
 
 import java.io.ByteArrayOutputStream;
@@ -43,24 +44,23 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class RoomScreen extends AppCompatActivity {
+//C:\Users\User\Desktop
 
-    private Camera mCamera;
+public class RoomScreen extends AppCompatActivity {
 
     public static RoomBinding binding;
     private String username;
     private String room;
-    private ArrayAdapter<String> adapter;
-
-    public static Context context;
 
     public static ChatArrayAdapter chatArrayAdapter;
+    public static OnlineUsersArrayAdapter onlineUsersArrayAdapter;
     public static boolean side = false;
     private ArrayList<String> arrayList;
 
@@ -80,8 +80,23 @@ public class RoomScreen extends AppCompatActivity {
         chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(),  R.layout.right);
         binding.messagesView.setAdapter(chatArrayAdapter);
 
+        onlineUsersArrayAdapter = new OnlineUsersArrayAdapter(getApplicationContext(),  R.layout.users);
+        binding.usersView.setAdapter(onlineUsersArrayAdapter);
+
         username = getIntent().getExtras().get("username").toString();
         room = getIntent().getExtras().get("room").toString();
+
+        binding.headerText.setText(binding.headerText.getText() + " "+ room);
+
+        binding.onlineUsersButton.setOnClickListener(view -> {
+            if (binding.usersLayout.getVisibility() == View.VISIBLE){
+                binding.usersLayout.setVisibility(View.INVISIBLE);
+            }
+            else{
+                UserList userList = new UserList();
+                userList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (String[]) null);
+            }
+        });
 
         binding.sendButton.setOnClickListener(view -> {
             if (binding.messageInput.getText().length() > 0) {
@@ -99,7 +114,6 @@ public class RoomScreen extends AppCompatActivity {
             else
                 binding.more.setVisibility(View.INVISIBLE);
         });
-
 
 
 
@@ -136,15 +150,8 @@ public class RoomScreen extends AppCompatActivity {
             }
         });
 
-        binding.messageInput.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
 
-                return false;
-            }
-        });
-
-        binding.cameraButton.setOnClickListener(view -> {
+        binding.videoButton.setOnClickListener(view -> {
 
             getCameraPermission();
 
@@ -153,24 +160,34 @@ public class RoomScreen extends AppCompatActivity {
 
             Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT,dir);
+
             intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
             startActivityForResult(intent, 1);
         });
 
-        binding.fileButton.setOnClickListener(view -> {
 
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Video.Media.INTERNAL_CONTENT_URI);
+
+        binding.imgFileButton.setOnClickListener(view -> {
+
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
 
-            galleryIntent.setType("video/*, image/*");
-            String[] mimetypes = {"image/*", "video/*"};
+            String[] mimetypes = {"image/*"};
             galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
             startActivityForResult(galleryIntent, 10);
 
         });
 
+        binding.videoFileButton.setOnClickListener(view -> {
+
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK,MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+
+            String[] mimetypes = {"video/*"};
+            galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+            startActivityForResult(galleryIntent, 10);
+
+        });
 
 
     }
@@ -186,11 +203,11 @@ public class RoomScreen extends AppCompatActivity {
             {
                 assert data != null;
 
-                Uri vid = data.getData();
-                String videoPath = getRealPathFromURI(vid);
+                Uri file= data.getData();
+                String filePath = getRealPathFromURI(file);
 
                 String[] params = new String[1];
-                params[0] = videoPath;
+                params[0] = filePath;
 
                 Log.e("asdad" , params[0]);
 
@@ -200,10 +217,10 @@ public class RoomScreen extends AppCompatActivity {
 
             }
             else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.i("VIDEO_UPLOAD_TAG", "Recording or picking video is cancelled");
+                Log.i("VIDEO_UPLOAD_TAG", "Recording or picking file(img/video) is cancelled . "+resultCode);
             }
             else {
-                Log.i("VIDEO_UPLOAD_TAG", "Recording or picking video has got some error");
+                Log.i("VIDEO_UPLOAD_TAG", "Recording or picking file(img/video) has got some error . "+resultCode);
             }
         }
     }
@@ -228,6 +245,16 @@ public class RoomScreen extends AppCompatActivity {
         }
     }
 
+    public static void initUserList(ArrayList<String> online_users){
+        for (String user : online_users){
+            Log.e("user ", user);
+            if (!onlineUsersArrayAdapter.hasUser(user))
+                onlineUsersArrayAdapter.add(user);
+        }
+
+        binding.usersLayout.setVisibility(View.VISIBLE);
+    }
+
     public boolean displayOwnMessage(String type) throws IOException {
 
         if (type.equals("text")){
@@ -250,15 +277,22 @@ public class RoomScreen extends AppCompatActivity {
 
     public static boolean displayRemoteMessage(String data , String type){
 
-        if (Objects.equals(type, "text"))
-            chatArrayAdapter.add(new Message(!side, data, "string"));
-        else{
-            int index = data.lastIndexOf('.');
-            String extension = data.substring(index + 1);
-            initFile(data , extension);
+        if (chatArrayAdapter != null){
+            if (type.equals("name"))
+                chatArrayAdapter.add(new Message(!side, data, "name"));
+            else if (Objects.equals(type, "text"))
+                chatArrayAdapter.add(new Message(!side, data, "string"));
+            else{
+                int index = data.lastIndexOf('.');
+                String extension = data.substring(index + 1);
+                initFile(data , extension);
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
+
     }
 
     protected static void initFile(String path, String extension)
@@ -333,6 +367,37 @@ public class RoomScreen extends AppCompatActivity {
             return null;
         }
         return byteBuffer.toByteArray();
+    }
+
+    private class UserList extends  AsyncTask<String , String , String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+                MainActivity.out.writeUTF("Online Users");
+                MainActivity.out.flush();
+
+                MainActivity.out.writeUTF(room);
+                MainActivity.out.flush();
+
+
+
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+
+        }
     }
 
 
