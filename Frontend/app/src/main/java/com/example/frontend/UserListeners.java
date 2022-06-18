@@ -24,8 +24,6 @@ public class UserListeners extends Thread{
     public UserListeners(ObjectInputStream in, ObjectOutputStream out){
         this.in = in;
         this.out = out;
-
-
     }
 
     public void run(){
@@ -36,7 +34,6 @@ public class UserListeners extends Thread{
 
             while (true){
                 task = in.readUTF();
-
 
                 if (task.equals("Create Room")){
                     System.out.println("create room "+ MainActivity.name);
@@ -59,8 +56,6 @@ public class UserListeners extends Thread{
                     String BrokerPort = in.readUTF();
                     String senderName = in.readUTF();
 
-//                    System.out.println("receive "+senderName);
-
                     // connect to broker
                     Socket socket = new Socket(BrokerIp, Integer.parseInt(BrokerPort));
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -80,7 +75,6 @@ public class UserListeners extends Thread{
                         }
                     });
 
-
                     socket.close();
                     objectInputStream.close();
                     objectOutputStream.close();
@@ -90,8 +84,6 @@ public class UserListeners extends Thread{
                     String BrokerIp = in.readUTF();
                     String BrokerPort = in.readUTF();
                     String senderName = in.readUTF();
-
-//                    System.out.println("receive "+senderName);
 
                     // connect to broker
                     Socket socket = new Socket(BrokerIp, Integer.parseInt(BrokerPort));
@@ -162,7 +154,6 @@ public class UserListeners extends Thread{
 
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
-
                         public void run() {
                             RoomScreen.initUserList(online_users);
                         }
@@ -178,6 +169,8 @@ public class UserListeners extends Thread{
         }
 
     }
+
+
 
     private String writeFileData(String name , byte[] data ,String extension) {
         File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);

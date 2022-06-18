@@ -17,8 +17,7 @@ import java.util.ArrayList;
 
 public class FileView extends AppCompatActivity {
 
-    public static VideoViewBinding binding;
-
+    public VideoViewBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +50,6 @@ public class FileView extends AppCompatActivity {
 
 
         binding.back.setOnClickListener(view -> {
-
             finish();
         });
     }

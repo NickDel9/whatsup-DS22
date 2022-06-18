@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class ChatArrayAdapter extends ArrayAdapter<Message>  {
+public class ChatArrayAdapter extends ArrayAdapter<Message>  {
 
     private TextView chatText;
     private List<Message> chatMessageList = new ArrayList<Message>();
@@ -81,9 +81,28 @@ class ChatArrayAdapter extends ArrayAdapter<Message>  {
         }
         else if (chatMessageObj.type.equals("string")){
             chatText = (TextView) row.findViewById(R.id.msgr);
-            chatText.setText(chatMessageObj.message);
-            chatText.getLayoutParams().height = 110;
+
+            StringBuilder temp = new StringBuilder();
+            StringBuilder sentence = new StringBuilder();
+
+            String[] line = chatMessageObj.message.split(" ");
+            Log.e("ep " , chatMessageObj.message);
+
+            for (String word : line){
+                System.out.println("aaa aasd "+temp.length() +"   " +word.length());
+                if ((temp.length() + word.length()) < 17) {  // create a temp variable and check if length with new word exceeds textview width.
+                    temp.append(" ").append(word);
+                } else {
+                    sentence.append(temp).append("\n"); // add new line character
+                    temp = new StringBuilder(word);
+                }
+            }
+
+            chatText.setText(sentence.replace(0,1,"" )+ temp.toString());
+            System.out.println(sentence+ temp.toString());
+
             row.setEnabled(false);
+
         }
         else if (chatMessageObj.type.equals("mp4")){
 
@@ -98,10 +117,7 @@ class ChatArrayAdapter extends ArrayAdapter<Message>  {
             imageView.getLayoutParams().height = 250;
             imageView.setImageURI(Uri.fromFile(new File(chatMessageObj.message)));
 
-
         }
-
-
 
         return row;
     }

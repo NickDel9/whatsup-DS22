@@ -29,12 +29,8 @@ public class UserNode extends Thread{
 
         port = args[0];
 
-//        UserNode userNode = new UserNode();
-//
-//        userNode.init();
-
-        UserNode userNode1serNode = new UserNode();
-        userNode1serNode.start();
+        UserNode userNode = new UserNode();
+        userNode.start();
 
     }
 
@@ -67,7 +63,7 @@ public class UserNode extends Thread{
                 String brokerIP = in.readUTF();
                 String brokerPort = in.readUTF();
 
-                BigInteger hash = Info.Util.hash(brokerIP + brokerPort); // hash brokers
+                BigInteger hash = Util.hash(brokerIP + brokerPort); // hash brokers
 
                 brokerHashes.add(hash);
 
@@ -83,7 +79,7 @@ public class UserNode extends Thread{
         }
 
         System.out.println("Create or Join a room by typing the name.");
-        this.chatroom = sc.next();
+        this.chatroom = sc.nextLine();
 
         if (!this.chatroom.equals("")){
 
@@ -99,9 +95,6 @@ public class UserNode extends Thread{
             out.writeUTF(this.name);
             out.flush();
 
-
-
-           // menu();
         }
 
     }
@@ -114,9 +107,8 @@ public class UserNode extends Thread{
             System.out.println("Welcome "+name+" ! Start typing text and press enter to send it! .\n" +
                             "If you want to send Video/Image press 1 & Enter and then the path.");
 
-            Thread sendmsg = new SendMessage(this.in, this.out);
-            sendmsg.start();
-
+            Thread sending = new SendMessage(this.in, this.out);
+            sending.start();
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -125,7 +117,7 @@ public class UserNode extends Thread{
     }
 
     public static List<String> hashName(String topic) {
-        BigInteger no = Info.Util.hash(topic);
+        BigInteger no = Util.hash(topic);
 
         if (no.compareTo(brokerHashes.get(0)) > 0 && no.compareTo(brokerHashes.get(1)) < 0) {
             return brokersInfo.get(brokerHashes.get(1));

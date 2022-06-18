@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
    >
         <TextView
             android:id="@+id/msgr"
-            android:layout_width="wrap_content"
-            android:maxWidth="200dp"
+            android:layout_width="0dp"
+
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:maxLines="6"
+            android:minLines="2"
 
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="20dp"
-            android:background="#E6E6E6"
+            android:background="@drawable/border_box_3"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:textSize="20sp"
             android:paddingRight="10dp"
             android:paddingTop="5dp"
             android:text="Sample"
-            android:textColor="#000" />
+            android:textColor="#000"
+            tools:ignore="Suspicious0dp" />
 
 </LinearLayout>

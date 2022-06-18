@@ -32,16 +32,11 @@ public class MainActivity extends AppCompatActivity {
     // hash of brokers. We need them for the brokersInfo
     public static ArrayList<BigInteger> brokerHashes = new ArrayList<BigInteger>();
 
-    HashMap<String,String> brokers = new HashMap<>();
-
-
     // HashMap brokersInfo contains broker's hash and its IP/Port
     public static HashMap<BigInteger, ArrayList<String>> brokersInfo = new HashMap<BigInteger, ArrayList<String>>();
 
-    Socket connectToServer;
     String MainServerIP = "192.168.1.8";
     int MainServerPort = 5000;
-    UUID uuid;
     public static String name;
     public static String chatroom;
     public static String port;

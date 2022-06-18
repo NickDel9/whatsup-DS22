@@ -2,17 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     >
 
     <TextView
         android:id="@+id/msgr"
         android:layout_width="wrap_content"
-        android:maxWidth="200dp"
-        android:layout_height="0dp"
+
+        android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="20dp"
-        android:background="#F4F4F4"
+        android:background="@drawable/border"
+        android:maxLines="6"
 
         android:paddingBottom="8dp"
         android:paddingLeft="10dp"
@@ -21,5 +24,7 @@
         android:paddingTop="5dp"
         android:text="Sampleleft"
         android:textColor="#000" />
+
+
 
 </RelativeLayout>

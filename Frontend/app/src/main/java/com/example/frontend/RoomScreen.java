@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+
 import com.example.frontend.databinding.RoomBinding;
 
 import java.io.ByteArrayOutputStream;
@@ -214,7 +215,6 @@ public class RoomScreen extends AppCompatActivity {
                 FileChat chat = new FileChat();
                 chat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (params));
 
-
             }
             else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.i("VIDEO_UPLOAD_TAG", "Recording or picking file(img/video) is cancelled . "+resultCode);
@@ -225,25 +225,7 @@ public class RoomScreen extends AppCompatActivity {
         }
     }
 
-    public String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
 
-
-
-    private void getCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    100);
-        }
-    }
 
     public static void initUserList(ArrayList<String> online_users){
         for (String user : online_users){
@@ -271,7 +253,6 @@ public class RoomScreen extends AppCompatActivity {
             chatArrayAdapter.add(new Message(side, URL , extension));
         }
 
-
         return true;
     }
 
@@ -295,8 +276,7 @@ public class RoomScreen extends AppCompatActivity {
 
     }
 
-    protected static void initFile(String path, String extension)
-    {
+    protected static void initFile(String path, String extension) {
 
         String URL = path;
         Log.e("DEBUG", extension +" "+URL);
@@ -306,14 +286,10 @@ public class RoomScreen extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private ArrayList<byte[]> Chunks(String path) throws IOException {
+    public  ArrayList<byte[]> Chunks(String path) throws IOException {
 
         int numOfChunks;
         byte[] multimediaFileChunk = null;
-
-//        Uri.fromFile(new File(path));
-////
-//        byte[] arrayBytes = Files.readAllBytes(Paths.get(String.valueOf(Uri.fromFile(new File(path)))));
 
         InputStream iStream =  getContentResolver().openInputStream(Uri.fromFile(new File(path)));
         byte[] arrayBytes = getBytes(iStream);
@@ -369,6 +345,24 @@ public class RoomScreen extends AppCompatActivity {
         return byteBuffer.toByteArray();
     }
 
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+
+    private void getCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    100);
+        }
+    }
+
     private class UserList extends  AsyncTask<String , String , String>{
 
         @Override
@@ -381,9 +375,60 @@ public class RoomScreen extends AppCompatActivity {
                 MainActivity.out.writeUTF(room);
                 MainActivity.out.flush();
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+            return null;
+        }
 
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
 
+    private class Chat extends AsyncTask<String,String,String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            List<String> rensposibleBroker = MainActivity.hashName(MainActivity.name);
+
+            try {
+
+                // connect to broker
+                Socket socket = new Socket(rensposibleBroker.get(0), Integer.parseInt(rensposibleBroker.get(1)));
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+                objectOutputStream.writeUTF("Sender");
+                objectOutputStream.flush();
+
+                objectOutputStream.writeUTF(binding.messageInput.getText().toString());
+                objectOutputStream.flush();
+
+                socket.close();
+                objectInputStream.close();
+                objectOutputStream.close();
+
+                MainActivity.out.writeUTF("Send");
+                MainActivity.out.flush();
+
+                MainActivity.out.writeUTF(rensposibleBroker.get(0));
+                MainActivity.out.flush();
+
+                MainActivity.out.writeUTF(rensposibleBroker.get(1));
+                MainActivity.out.flush();
+
+                MainActivity.out.writeUTF(MainActivity.name);
+                MainActivity.out.flush();
+
+                MainActivity.out.writeUTF(MainActivity.chatroom);
+                MainActivity.out.flush();
+
+                MainActivity.out.writeUTF("Text");
+                MainActivity.out.flush();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -396,12 +441,12 @@ public class RoomScreen extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-
+            chatArrayAdapter.add(new Message(side, binding.messageInput.getText().toString(),"string"));
+            binding.messageInput.setText("");
         }
     }
 
-
-    private class FileChat extends AsyncTask<String,String,String>{
+    private class FileChat extends AsyncTask<String,String,String> {
 
         String path = "";
 
@@ -464,9 +509,6 @@ public class RoomScreen extends AppCompatActivity {
                 MainActivity.out.writeUTF("File");
                 MainActivity.out.flush();
 
-
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -484,70 +526,13 @@ public class RoomScreen extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+
     }
 
 
-    private class Chat extends AsyncTask<String,String,String>{
-
-
-        @Override
-        protected String doInBackground(String... strings) {
-
-            List<String> rensposibleBroker = MainActivity.hashName(MainActivity.name);
-
-            try {
-
-                // connect to broker
-                Socket socket = new Socket(rensposibleBroker.get(0), Integer.parseInt(rensposibleBroker.get(1)));
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-                objectOutputStream.writeUTF("Sender");
-                objectOutputStream.flush();
-
-
-                objectOutputStream.writeUTF(binding.messageInput.getText().toString());
-                objectOutputStream.flush();
-
-                socket.close();
-                objectInputStream.close();
-                objectOutputStream.close();
-
-
-                MainActivity.out.writeUTF("Send");
-                MainActivity.out.flush();
-
-                MainActivity.out.writeUTF(rensposibleBroker.get(0));
-                MainActivity.out.flush();
-
-                MainActivity.out.writeUTF(rensposibleBroker.get(1));
-                MainActivity.out.flush();
-
-                MainActivity.out.writeUTF(MainActivity.name);
-                MainActivity.out.flush();
-
-                MainActivity.out.writeUTF(MainActivity.chatroom);
-                MainActivity.out.flush();
-
-                MainActivity.out.writeUTF("Text");
-                MainActivity.out.flush();
 
 
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            chatArrayAdapter.add(new Message(side, binding.messageInput.getText().toString(),"string"));
-            binding.messageInput.setText("");
-        }
-    }
 }

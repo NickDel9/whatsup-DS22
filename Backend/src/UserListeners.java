@@ -25,7 +25,6 @@ public class UserListeners extends Thread{
             while (true){
                 task = in.readUTF();
 
-
                 if (task.equals("Create Room")){
                     System.out.println("create room "+ UserNode.name);
                 }
@@ -33,14 +32,9 @@ public class UserListeners extends Thread{
                     System.out.println("join room "+ UserNode.name);
                 }
                 else if (task.equals("User joined")){
-                   // ArrayList<String> friends = (ArrayList<String>) in.readObject();
+
                     String name = in.readUTF();
                     System.out.println(name +" join room!");
-
-//                    for(int i = 0; i < friends.size(); i++){
-//                        if (!friends.get(i).equals(UserNode.name))
-//                            System.out.println(i+". "+friends.get(i));
-//                    }
                 }
                 else if (task.equals("Receive")){
                     String BrokerIp = in.readUTF();

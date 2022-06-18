@@ -100,7 +100,6 @@ public class Broker {
 
             if (task.equals("Receiver")){
 
-
                 objectOutputStream.writeUTF(text);
                 objectOutputStream.flush();
                 System.out.println("Send "+ text);

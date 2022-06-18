@@ -55,6 +55,8 @@ public class SendMessage extends Thread {
 
                     if (ans.equals("1")){
 
+                        System.out.print("Type your File Path and press Enter . . . -----> ");
+
                         String path = sc.next();
 
                         ArrayList<byte[]> chunks = new ArrayList<>(Chunks(path));
@@ -88,15 +90,13 @@ public class SendMessage extends Thread {
                         objectInputStream.close();
                         objectOutputStream.close();
 
-
+                        // tell to server to notify other peer for incoming file
                         out.writeUTF("File");
                         out.flush();
 
 
                     }
                     else{
-                        out.writeUTF("Text");
-                        out.flush();
 
                         // connect to broker
                         Socket socket = new Socket(rensposibleBroker.get(0), Integer.parseInt(rensposibleBroker.get(1)));
@@ -112,6 +112,10 @@ public class SendMessage extends Thread {
                         socket.close();
                         objectInputStream.close();
                         objectOutputStream.close();
+
+                        // tell to server to notify other peer for incoming text message
+                        out.writeUTF("Text");
+                        out.flush();
                     }
 
 
@@ -145,14 +149,12 @@ public class SendMessage extends Thread {
         for (int i = 0; i < numOfChunks; i++) {
             if (i == numOfChunks - 1) {
                 multimediaFileChunk = new byte[totalBytes - (i * chunkSize)];
-                for (int j = 0; j < multimediaFileChunk.length; j++) {
-                    multimediaFileChunk[j] = arrayBytes[(i * chunkSize) + j];
-                }
+                if (multimediaFileChunk.length >= 0)
+                    System.arraycopy(arrayBytes, (i * chunkSize), multimediaFileChunk, 0, multimediaFileChunk.length);
             } else {
                 multimediaFileChunk = new byte[chunkSize];
-                for (int j = 0; j < chunkSize; j++) {
-                    multimediaFileChunk[j] = arrayBytes[(i * chunkSize) + j];
-                }
+                if (chunkSize >= 0)
+                    System.arraycopy(arrayBytes, (i * chunkSize), multimediaFileChunk, 0, chunkSize);
             }
 
             byte[] multimediaFile = multimediaFileChunk;
