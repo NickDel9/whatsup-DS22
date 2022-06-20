@@ -10,7 +10,6 @@ public class Server extends Thread{
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
 
-    private static HashMap<String, String> appnodeInfo = new HashMap<>();
     private static ArrayList<ArrayList<String>> brokers = new ArrayList<>();
     private static HashMap<String, ArrayList<String>> appnodes = new HashMap<>();
     private static HashMap<String, ArrayList<String>> rooms = new HashMap<>();
@@ -43,7 +42,6 @@ public class Server extends Thread{
             Thread server = new Server(connectionSocket);
             server.start();
         }
-
 
     }
 
@@ -108,8 +106,6 @@ public class Server extends Thread{
                         objectOutputStream.flush();
                     }
 
-                    appnodeInfo.put(name , id.toString());
-                    System.out.println(appnodeInfo.get(name));
 
                 }
                 else if (task.equals("Inserts")){

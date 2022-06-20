@@ -122,7 +122,7 @@ public class UserListeners extends Thread{
                             }
 
                         } catch (Exception e) {
-                            System.out.println("ERROR");
+                            e.printStackTrace();
                         }
                     }
 

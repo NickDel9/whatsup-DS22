@@ -52,8 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-//C:\Users\User\Desktop
-
 public class RoomScreen extends AppCompatActivity {
 
     public static RoomBinding binding;
@@ -63,7 +61,6 @@ public class RoomScreen extends AppCompatActivity {
     public static ChatArrayAdapter chatArrayAdapter;
     public static OnlineUsersArrayAdapter onlineUsersArrayAdapter;
     public static boolean side = false;
-    private ArrayList<String> arrayList;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -116,8 +113,6 @@ public class RoomScreen extends AppCompatActivity {
                 binding.more.setVisibility(View.INVISIBLE);
         });
 
-
-
         binding.messagesView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         binding.messagesView.setAdapter(chatArrayAdapter);
 
@@ -128,7 +123,6 @@ public class RoomScreen extends AppCompatActivity {
                 binding.messagesView.setSelection(chatArrayAdapter.getCount() - 1);
             }
         });
-
 
         binding.messagesView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -226,10 +220,8 @@ public class RoomScreen extends AppCompatActivity {
     }
 
 
-
     public static void initUserList(ArrayList<String> online_users){
         for (String user : online_users){
-            Log.e("user ", user);
             if (!onlineUsersArrayAdapter.hasUser(user))
                 onlineUsersArrayAdapter.add(user);
         }
@@ -247,8 +239,6 @@ public class RoomScreen extends AppCompatActivity {
             String URL = type;
             int index = type.lastIndexOf('.');
             String extension = type.substring(index + 1);
-
-            Log.e("DEBUG", extension +" "+URL);
 
             chatArrayAdapter.add(new Message(side, URL , extension));
         }
@@ -273,16 +263,11 @@ public class RoomScreen extends AppCompatActivity {
         }
 
         return false;
-
     }
 
     protected static void initFile(String path, String extension) {
 
-        String URL = path;
-        Log.e("DEBUG", extension +" "+URL);
-
-        chatArrayAdapter.add(new Message(!side, URL , extension));
-
+        chatArrayAdapter.add(new Message(!side, path , extension));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

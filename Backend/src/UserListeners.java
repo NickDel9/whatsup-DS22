@@ -64,8 +64,6 @@ public class UserListeners extends Thread{
                     String BrokerPort = in.readUTF();
                     String senderName = in.readUTF();
 
-//                    System.out.println("receive "+senderName);
-
                     // connect to broker
                     Socket socket = new Socket(BrokerIp, Integer.parseInt(BrokerPort));
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -84,7 +82,7 @@ public class UserListeners extends Thread{
                         byte[] chunk = (byte[]) objectInputStream.readObject();
                         file.add(chunk);
                     }
-                    Desktop.getDesktop().open(UserNode.ReInitFile(file , "src/out/element"+file.size() +"."+ extension));
+                    Desktop.getDesktop().open(UserNode.ReInitFile(file , "src/out/element"+file.size()+senderName +"."+ extension));
 
                     socket.close();
                     objectInputStream.close();

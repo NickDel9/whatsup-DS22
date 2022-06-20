@@ -31,8 +31,6 @@ public class ChatArrayAdapter extends ArrayAdapter<Message>  {
     }
 
 
-
-
     public ChatArrayAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
         this.context = context;
@@ -89,7 +87,6 @@ public class ChatArrayAdapter extends ArrayAdapter<Message>  {
             Log.e("ep " , chatMessageObj.message);
 
             for (String word : line){
-                System.out.println("aaa aasd "+temp.length() +"   " +word.length());
                 if ((temp.length() + word.length()) < 17) {  // create a temp variable and check if length with new word exceeds textview width.
                     temp.append(" ").append(word);
                 } else {

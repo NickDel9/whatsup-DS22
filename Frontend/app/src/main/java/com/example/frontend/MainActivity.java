@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return null;
-
-
         }
 
         private void init() throws IOException {

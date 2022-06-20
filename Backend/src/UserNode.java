@@ -105,7 +105,7 @@ public class UserNode extends Thread{
             init();
 
             System.out.println("Welcome "+name+" ! Start typing text and press enter to send it! .\n" +
-                            "If you want to send Video/Image press 1 & Enter and then the path.");
+                            "If you want to send Video/Image press 1 & Enter and then enter the file's path.");
 
             Thread sending = new SendMessage(this.in, this.out);
             sending.start();
@@ -158,7 +158,7 @@ public class UserNode extends Thread{
                 }
 
             } catch (Exception e) {
-                System.out.println("err");
+                e.printStackTrace();
             }
         }
         fileOutputStream.write(arr);
